@@ -1,0 +1,12 @@
+@font-face {
+	font-family: 'Cormorant Garamond';
+	font-style: normal;
+	font-weight: 300;
+	src:
+		local('CormorantGaramond-Light'),
+		local('CormorantGaramond-Light'),
+		/* from https://fonts.gstatic.com/s/yanonekaffeesatz/v8/YDAoLskQQ5MOAgvHUQCcLRTHiN2BPBirwIkMLKUspj4.woff */
+		url('../fonts/CormorantGaramond-Light.ttf') format('ttf'),
+		/* from https://fonts.gstatic.com/s/yanonekaffeesatz/v8/YDAoLskQQ5MOAgvHUQCcLfGwxTS8d1Q9KiDNCMKLFUM.woff2 */
+		url('../fonts/CormorantGaramond-Light.ttf') format('ttf');
+}

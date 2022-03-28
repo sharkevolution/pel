@@ -28,6 +28,7 @@ STATIC_PATHS = [
 
 EXTRA_PATH_METADATA = {
     'static/robots.txt': {'path': 'robots.txt'},
+    'static/freelancehunt-cd398cd9f82c7ad.txt': {'path': 'freelancehunt-cd398cd9f82c7ad.txt'},
     }
 
 DISQUS_SITENAME = "sitala"

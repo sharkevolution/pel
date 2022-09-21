@@ -9,8 +9,8 @@ Tags: PDF, JPG, Jupyter
 [Binder][1] создание вычисляемый среды для запуска записных книжек [Jupyter][2], 
 чтобы наш код мог немедленно воспроизводиться кем угодно и где угодно.
 
-[1]: https://mybinder.org/
-[2]: https://jupyter.org/
+[1]: https://mybinder.org
+[2]: https://jupyter.org
 
 ###### [Создайте среду и используйте конвертер PDF to JPG][3]
 

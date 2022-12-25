@@ -1,7 +1,9 @@
-Title: Forth
-Date: 2022-12-25 18:31
-Author: Sitala
-Tags: Forth
+Title: asdsdf
+Date: 2022-09-01 18:46
+Author: ----
+Tags: Earth
+Cover: /images/army/slide-7.jpg
+Summary: and this is my post summary
 
 ## При определении координат точек местности по карте применяют географические, плоские прямоугольные и полярные координаты.
 

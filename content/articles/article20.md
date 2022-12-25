@@ -1,9 +1,9 @@
-Title: asdsdf
-Date: 2022-09-01 18:46
-Author: ----
-Tags: Earth
-Cover: /images/army/slide-7.jpg
-Summary: and this is my post summary
+Title: Forth простой стек ориентированный язык
+Date: 2022-12-25 22:51
+Author: Sitala
+Tags: Forth
+Cover: /images/Forth.png
+Summary:
 
 ## При определении координат точек местности по карте применяют географические, плоские прямоугольные и полярные координаты.
 

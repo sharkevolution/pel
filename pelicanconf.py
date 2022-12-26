@@ -15,6 +15,7 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 THEME = 'alchemy'
+THEME_CSS_OVERRIDES = ['theme/css/oldstyle.css']
 
 # Social widget
 SOCIAL = (

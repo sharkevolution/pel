@@ -43,7 +43,9 @@
           <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}{% if article.link %} <i class="fas fa-link"></i>{% endif %}</a>
         </h4>
         <div class="content">
-          {% if article.cover %}<img src="{{ article.cover }}"class="img-fluid" alt="">{% endif %} {{ article.summary|striptags }}
+          {% if article.cover %}<img src="{{ article.cover }}" class="img-thumbnail"
+                                     alt=""> {% endif %} {{ article.summary|striptags }}
+
         </div>
       </div>
     </article>

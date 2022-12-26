@@ -2,7 +2,7 @@ Title: Forth простой стек ориентированный язык
 Date: 2022-12-25 22:51
 Author: Sitala
 Tags: Forth
-Cover: /images/Forth.png
+Cover: /images/forth1.png
 Summary:
 
 ## Что такое Forth

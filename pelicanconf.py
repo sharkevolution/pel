@@ -40,8 +40,10 @@ LINKS = (
 RFG_FAVICONS = True
 
 SITESUBTITLE = 'A magical \u2728 Pelican theme'
-SITEIMAGE = '/images/1087sm-700x700.jpg width=200 height=200'
+SITEIMAGE = '/images/1087sm-700x700.png width=300 height=300'
+
 PYGMENTS_STYLE = 'autumn'
+
 THEME_JS_OVERRIDES = ['theme/js/bootstrap.min.js',]
 BOOTSTRAP_CSS = 'theme/css/bootstrap.min.css'
 
@@ -49,7 +51,6 @@ PLUGINS = ['plugins.bootstrap', 'render_math']
 
 BOOTSTRAPIFY = {
     'table': ['table', 'table-striped', 'table-hover'],
-    'img': ['img-fluid'],
+    'img': ['img-fluid', "img-thumbnail"],
     'blockquote': ['blockquote'],
 }
-# {: .img-fluid}

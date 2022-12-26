@@ -2,7 +2,7 @@ Title: Hans Rosling
 Date: 2021-12-28 23:50
 Author: Sitala
 Tags: Python, animated, bubble, charts, rosling, plotly
-Cover: /images/hans-roslings-bubble-chart-for-the-year-2007.png
+Cover: /images/hans-roslings.png
 Summary:
 
 ## Make an impressive animated bubble chart with Plotly in Python — inspired by professor Hans Rosling

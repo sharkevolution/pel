@@ -2,8 +2,10 @@ Title: Создание тепловой карты в QGIS
 Date: 2021-11-24 20:20
 Author: Sitala
 Tags: qgis
+Cover: /images/hexagon.png
+Summary:
 
-## Описание краткого порядка действий для создания тепловой карты в QGIS
+## Описание краткого порядка действий для создания тепловой карты QGIS
 
 #### Step by Step
 

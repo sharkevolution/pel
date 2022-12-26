@@ -12,7 +12,7 @@ from pelican import signals, contents
 
 BOOTSTRAPIFY_DEFAULT = {
     'table': ['table', 'table-striped'],
-    'img': ['img-fluid']
+    'img': ['img-fluid', 'img-thumbnail']
 }
 BOOTSTRAPIFY_KEY = 'BOOTSTRAPIFY'
 

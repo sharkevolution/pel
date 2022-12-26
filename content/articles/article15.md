@@ -2,6 +2,8 @@ Title: Вычисление расстояний на сфере
 Date: 2022-01-01 23:50
 Author: Sitala
 Tags: Python, Earth, coordinates, algorithm
+Cover: /images/calc_coords.png
+Summary:
 
 ## Алгоритм вычисления расстояния на сфере между двумя координатными точками wgs-84
 

@@ -2,6 +2,8 @@ Title: Конвертер градусов в десятичные градус�
 Date: 2021-11-24 20:20
 Author: Sitala
 Tags: degrees, jupyter, python, bind
+Cover: /images/degrees-minutes-seconds-to-decimal.png
+Summary:
 
 ## Конвертер градусов в десятичные градусы, Degrees (°), minutes ('), seconds ('')
 

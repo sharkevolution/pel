@@ -2,6 +2,8 @@ Title: Генератор паролей
 Date: 2021-11-10 20:20
 Author: Sitala
 Tags: password, jupyter, python, bind
+Cover: /images/password_entry_amid.png
+Summary:
 
 ## В этом посте мы увидим как использовать простой генератор паролей
 

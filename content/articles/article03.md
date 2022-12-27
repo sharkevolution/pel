@@ -2,6 +2,9 @@ Title: Шпаргалка Markdown
 Date: 2021-11-10 20:20
 Author: Sitala
 Tags: markdown
+Cover: /images/markdown_blue.png
+Summary:
+
 
 ## Использование облегченного языка разметки
 

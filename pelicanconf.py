@@ -43,6 +43,7 @@ RFG_FAVICONS = True
 SITESUBTITLE = 'A magical \u2728 Pelican theme'
 SITEIMAGE = '/images/1087sm-700x700.png width=300 height=300'
 
+
 PYGMENTS_STYLE = 'autumn'
 
 THEME_JS_OVERRIDES = ['theme/js/bootstrap.min.js',]

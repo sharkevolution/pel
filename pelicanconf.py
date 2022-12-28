@@ -19,8 +19,8 @@ THEME_CSS_OVERRIDES = ['theme/css/oldstyle.css']
 
 # Social widget
 SOCIAL = (
-        ('Twitter', 'http://twitter.com/shangsunset'),
-        ('fa-rss', 'http://github.com/shangsunset'),
+        ('Twitter', 'https://twitter.com/nsitala'),
+        ('fa-rss', 'https://github.com/sharkevolution'),
           )
 
 DEFAULT_PAGINATION = 4

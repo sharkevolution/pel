@@ -1,11 +1,13 @@
 AUTHOR = 'Sitala'
 SITENAME = 'The Precognition'
+SITESUBTITLE = 'A personal blog.'
 
 PATH = 'content'
 
 TIMEZONE = 'Europe/Kiev'
 
 DEFAULT_LANG = 'ru'
+DEFAULT_PAGINATION = 6
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
@@ -23,8 +25,6 @@ SOCIAL = (
         ('fa-rss', 'https://github.com/sharkevolution'),
           )
 
-DEFAULT_PAGINATION = 4
-
 ICONS = (
     ('fab fa-github', 'https://github.com/sharkevolution'),
 )
@@ -40,7 +40,7 @@ LINKS = (
 
 RFG_FAVICONS = True
 
-SITESUBTITLE = 'A magical \u2728 Pelican theme'
+# SITESUBTITLE = 'A magical \u2728 Pelican theme'
 SITEIMAGE = '/images/1087sm-700x700.png width=300 height=300'
 
 PYGMENTS_STYLE = 'autumn'
@@ -69,3 +69,7 @@ SITEMAP = {
         "pages": "monthly"
     }
 }
+
+# # Default value is ['index', 'tags', 'categories', 'authors', 'archives']
+# DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'authors', 'archives', 'sitemap']
+# SITEMAP_SAVE_AS = 'sitemap.xml'

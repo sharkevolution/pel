@@ -25,15 +25,15 @@ SOCIAL = (
 
 DEFAULT_PAGINATION = 4
 
-# Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
-
 ICONS = (
     ('fab fa-github', 'https://github.com/sharkevolution'),
 )
 
 LINKS = (
     ('Articles', '/category/articles.html'),
+    ('Jupyter', '/category/notebooks.html'),
+    ('Algorithms', '/category/algorithms.html'),
+    ('QGIS', '/category/qgis.html'),
     ('Misc', '/category/misc.html'),
     ('About', '/category/about.html'),
 )

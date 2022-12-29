@@ -5,6 +5,6 @@ Tags: about
 Cover: /images/photo_2022-03-28_23-06-34.jpg
 Summary:
 
-## Информация обо мне в CV
+### Информация обо мне в CV
 
-[Резюме]({static}../documents/Mykola Sitala-09-12-2022 CV.pdf)
+###[Резюме]({static}../documents/Mykola Sitala-09-12-2022 CV.pdf)

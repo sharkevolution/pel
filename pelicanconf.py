@@ -27,7 +27,6 @@ THEME_CSS_OVERRIDES = ['theme/css/oldstyle.css']
 # https://sharkevolution.github.io/mylab/
 
 ICONS = (
-    ('fab fa-github', 'https://github.com/sharkevolution'),
     ('fab fa-python', 'https://sharkevolution.github.io/mylab/'),
 )
 

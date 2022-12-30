@@ -20,13 +20,15 @@ THEME = 'alchemy'
 THEME_CSS_OVERRIDES = ['theme/css/oldstyle.css']
 
 # Social widget
-SOCIAL = (
-        ('Twitter', 'https://twitter.com/nsitala'),
-        ('fa-rss', 'https://github.com/sharkevolution'),
-          )
+# SOCIAL = (
+#         ('Twitter', 'https://twitter.com/nsitala'),
+#         ('fa-rss', 'https://github.com/sharkevolution'),
+#           )
+# https://sharkevolution.github.io/mylab/
 
 ICONS = (
     ('fab fa-github', 'https://github.com/sharkevolution'),
+    ('fab fa-python', 'https://sharkevolution.github.io/mylab/'),
 )
 
 LINKS = (

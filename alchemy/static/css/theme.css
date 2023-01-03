@@ -43,6 +43,7 @@ hr {
 .header ul,
 .header li {
   margin-bottom: .5rem;
+  vertical-align: text-top;
 }
 
 .header ul {

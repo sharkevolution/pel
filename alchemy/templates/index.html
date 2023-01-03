@@ -25,12 +25,12 @@
             {{ article.locale_date }}
           </li>
           <li>
-            <i class="fas fa-folder-open"></i>
+            <i class="fa fa-folder-open"></i>
             <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
           </li>
           {% if not HIDE_AUTHORS and article.authors %}
             <li>
-              <i class="fas fa-user"></i>
+              <i class="fa fa-user"></i>
               {% for author in article.authors %}
                 <a href="{{ SITEURL }}/{{ author.url }}">{{ author }}</a>{% if not loop.last %}, {% endif %}
               {% endfor %}

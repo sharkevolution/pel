@@ -22,8 +22,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 .fa {
   display: inline-block;
-  font: normal normal normal 40px/1 ForkAwesome;
-  font-size: xx-large;
+  font: normal normal normal 14px/1 ForkAwesome;
+  font-size: larger;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

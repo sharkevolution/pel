@@ -39,6 +39,12 @@
   {% include 'include/xml_feeds.html' %}
   {% block head %}{% endblock %}
   {% include 'include/analytics.html' %}
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Tipue-Search/5.0.0/tipuesearch.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Tipue-Search/5.0.0/tipuesearch_set.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Tipue-Search/5.0.0/tipuesearch.css"/> 
+	  
 </head>
 
 <body>
@@ -47,11 +53,34 @@
       {% include 'include/header.html' %}
       <script async src="https://cse.google.com/cse.js?cx=4453c7d3349e5466a">
       </script>
-      <div class="gcse-search"></div>
+	  
+      <!-- <div class="gcse-search"></div> -->
+	  
+	  <div id ="sidebar">
+		<form action="/">
+			<div class="tipue_search_right"><input type="text" name="q" id="tipue_search_input" pattern=".{3,}" title="At least 3 characters" required></div>
+			<div style="clear: both;"></div>
+		</form>
+
+		<div id="tipue_search_content"></div>
+		
+		<script>
+			$(document).ready(function() {
+				 $('#tipue_search_input').tipuesearch({
+					  'mode': 'static',
+					  'contentLocation': 'tipuesearch_content.json'
+				 });
+			});
+		</script>
+	  </div>
+	
+	<script src="{{ SITEURL }}tipuesearch_content.js"></script>
+	  
+	  
     </div>
   </header>
 
-  <div class="main">
+  <div class="main">	
     <div class="container">
       <h1>{% block page_header %}{% endblock %}</h1>
       <hr>

@@ -52,7 +52,7 @@ THEME_JS_OVERRIDES = ['theme/js/bootstrap.min.js',]
 BOOTSTRAP_CSS = 'theme/css/bootstrap.min.css'
 FONTAWESOME_CSS = 'theme/css/fork-awesome.css'
 
-# PLUGINS = ['plugins.bootstrap', 'render_math', "sitemap", 'plugins.tipue_search']
+
 PLUGINS = ['plugins.bootstrap', 'plugins.render_math', 'plugins.tipue_search', "sitemap"]
 
 BOOTSTRAPIFY = {

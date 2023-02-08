@@ -6,9 +6,3 @@ Cover: /images/rocket404.png
 Summary:
 
 ## Новый раздел, пока здесь никого нет.
-
-
-
-
-
- 

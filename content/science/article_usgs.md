@@ -1,4 +1,4 @@
-Title: Карта землятресений USGS
+Title: Карта землетресений USGS
 Date: 2023-02-08 00:01
 Author: Sitala
 Tags: science, usgs, world, earthquakes

@@ -37,6 +37,8 @@ LINKS = (
     ('Jupyter', '/category/notebooks.html'),
     ('Algorithms', '/category/algorithms.html'),
     ('QGIS', '/category/qgis.html'),
+    ('Excel', '/category/excel.html'),
+    ('Science', '/category/science.html'),
     ('Misc', '/category/misc.html'),
     ('About', '/category/about.html'),
 )

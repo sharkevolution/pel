@@ -1,0 +1,17 @@
+chat
+├── __init__.py
+├── admin.py
+├── apps.py
+├── migrations
+│   ├── 0001_initial.py
+│   ├── __init__.py
+├── models.py
+├── static
+│   ├── index.js
+│   └── room.js
+├── templates
+│   ├── index.html
+│   └── room.html
+├── tests.py
+├── urls.py
+└── views.py

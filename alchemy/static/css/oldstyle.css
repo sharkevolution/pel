@@ -22,10 +22,20 @@ a:hover {
   color: #0085a1;
 }
 
-blockquote {
+/*blockquote {
   color: #818a91;
   opacity: inherit;
+}*/
+
+blockquote {
+    font-style: italic;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    padding-left: 15px;
+    border-left: 3px solid #ccc;
 }
+
 
 .header {
   border-bottom: 1px solid rgba(0,0,0,.1)

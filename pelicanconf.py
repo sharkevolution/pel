@@ -34,6 +34,7 @@ ICONS = (
 
 LINKS = (
     ('Articles', '/category/articles.html'),
+    ('Django', '/category/django.html'),
     ('Jupyter', '/category/notebooks.html'),
     ('Algorithms', '/category/algorithms.html'),
     ('QGIS', '/category/qgis.html'),

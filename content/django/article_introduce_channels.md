@@ -5,6 +5,13 @@ Tags: django, python, channels
 Cover: /images/b1922774.png
 Summary:
 
+## Introduction to Django Channels
+#### Это перевод оригинальной статьи [Introduction to Django Channels][1] Автор [Nik Tomazic][2]: 
+
+[1]:https://testdriven.io/blog/django-channels/
+[2]:https://testdriven.io/authors/tomazic/
+
+
 В этом примере мы будем создавать реал-тайм приложение чата с использованием Django Channels, фокусируясь на том, как интегрировать Django с Django Channels.
 
 > Зачем еще один чат? Ну хорошо, чат это самый легкий способ показать силу Channels. Тем не менее, это руководство выходит за рамки основ, осуществляя множество типов запросов, сообщения/постоянство чата, и личные сообщения (один на один). После прохождения руководства, вы будете способны собрать приложение реального времени. 

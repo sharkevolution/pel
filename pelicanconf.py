@@ -81,3 +81,15 @@ SITEMAP = {
 # # Default value is ['index', 'tags', 'categories', 'authors', 'archives']
 # DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'authors', 'archives', 'sitemap']
 # SITEMAP_SAVE_AS = 'sitemap.xml'
+
+MARKDOWN = {
+    "extension_configs": {
+        # Needed for code syntax highlighting
+        "markdown.extensions.codehilite": {"css_class": "highlight"},
+        "markdown.extensions.extra": {},
+        "markdown.extensions.meta": {},
+        # This is for enabling the TOC generation
+        "markdown.extensions.toc": {"title": "Оглавление"},
+    },
+    "output_format": "html5",
+}

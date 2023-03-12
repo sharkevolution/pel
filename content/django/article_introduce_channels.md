@@ -5,12 +5,12 @@ Tags: django, python, channels
 Cover: /images/b1922774.png
 Summary:
 
-## Introduction to Django Channels
+[TOC]
+
 #### Это перевод оригинальной статьи [Introduction to Django Channels][1] Автор [Nik Tomazic][2]: 
 
 [1]:https://testdriven.io/blog/django-channels/
 [2]:https://testdriven.io/authors/tomazic/
-
 
 В этом примере мы будем создавать реал-тайм приложение чата с использованием Django Channels, фокусируясь на том, как интегрировать Django с Django Channels.
 
@@ -462,3 +462,261 @@ Django Channels (или просто Channels) расширяет встроен
 	Starting ASGI/Channels version 3.0.4 development server at http://127.0.0.1:8000/
 ```
 
+### ДОБАВЛЕНИЕ CHANNEL LAYER
+Channel layer это своего рода система связи, которая позволяет множествам частей вашего приложения обмениваться сообщениями, без пересылки всех сообщений или событий через базу данных.
+
+Нам необходимо channel layer дать потребителям (которых мы реализуем на следующем шаге) способным говорить друг с другом.
+
+Хотя мы могли бы использовать **InMemoryChannelLayer** слой, поскольку мы находимся в режиме разработки, мы будем использовать готовый к работе слой **RedisChannelLayer**. Поскольку для этого слоя требуется Redis, введите следующую команду чтобы запустить его с Docker:
+
+	:::bash
+	(env)$ docker run -p 6379:6379 -d redis:5
+
+Эта команда скачает образ и запустит контейнер Redis Docker на порту `6379`.
+
+>Если вы не хотите использовать Docker, просто скачайте Redis прямо с официального вебсайта.
+
+Чтобы подключится к Redis из Django, нам необходимо инсталлировать дополнительный пакет с названием **channel_redis**:
+	
+	:::bash
+	(env)$ pip install channels_redis==3.3.1
+
+После этого, настроим слой *core/settings.py* следующим образом:
+
+	:::python
+	# core/settings.py
+
+	CHANNEL_LAYERS = {
+		'default': {
+			'BACKEND': 'channels_redis.core.RedisChannelLayer',
+			'CONFIG': {
+				"hosts": [('127.0.0.1', 6379)],
+			},
+		},
+	}
+
+Здесь, мы позволим channels_redis знать где сервер Redis находится. 
+Чтобы протестировать все ли работает как ожидалось, откройте Django оболочку:
+
+	:::bash
+	(env)$ python manage.py shell
+
+Затем запустите:
+
+	:::python
+	>>> import channels.layers
+	>>> channel_layer = channels.layers.get_channel_layer()
+	>>>
+	>>> from asgiref.sync import async_to_sync
+	>>> async_to_sync(channel_layer.send)('test_channel', {'type': 'hello'})
+	>>> async_to_sync(channel_layer.receive)('test_channel')
+	{'type': 'hello'}
+
+Здесь мы подключились к channel layer используя настройки определенные в *core/settings.py*. Мы использовали `channel_layer.send` для отправки сообщения группе `test_channel` и `channel_layer.receive` для чтения всех сообщений отправленных в туже группу.
+
+>Отметьте, что мы обернули все вызовы функции в `async_to_sync`, потому что слой каналов асинхронный.
+
+Введите `quit()` для выхода из оболочки.
+
+### ДОБАВЛЕНИЕ КАНАЛОВ ПОТРЕБИТЕЛЕЙ
+Потребитель — это основная единица кода Channels. Они крошечные приложения ASGI, управляемые событиями. Они похожи на Django представления. Однако в отличии от Django представлений, потребители являются долгосрочными по умолчанию. Django проект может иметь множество потребителей которые объединены с использованием маршрутизации Channels (которые мы рассмотрим в следующем разделе).
+
+Каждый потребитель имеет собственную область, который представляет набор сведений об одном входящем сообщении. Они содержат фрагменты данных о типе протокола, путь, заголовки, аргументы маршрутизации, пользовательский агент и другое.
+
+Создайте новый файл с названием *consumers.py* внутри “chat”:
+
+	:::python
+	# chat/consumers.py
+
+	import json
+
+	from asgiref.sync import async_to_sync
+	from channels.generic.websocket import WebsocketConsumer
+
+	from .models import Room
+
+
+	class ChatConsumer(WebsocketConsumer):
+
+		def __init__(self, *args, **kwargs):
+			super().__init__(args, kwargs)
+			self.room_name = None
+			self.room_group_name = None
+			self.room = None
+
+		def connect(self):
+			self.room_name = self.scope['url_route']['kwargs']['room_name']
+			self.room_group_name = f'chat_{self.room_name}'
+			self.room = Room.objects.get(name=self.room_name)
+
+			# connection has to be accepted
+			self.accept()
+
+			# join the room group
+			async_to_sync(self.channel_layer.group_add)(
+				self.room_group_name,
+				self.channel_name,
+			)
+
+		def disconnect(self, close_code):
+			async_to_sync(self.channel_layer.group_discard)(
+				self.room_group_name,
+				self.channel_name,
+			)
+
+		def receive(self, text_data=None, bytes_data=None):
+			text_data_json = json.loads(text_data)
+			message = text_data_json['message']
+
+			# send chat message event to the room
+			async_to_sync(self.channel_layer.group_send)(
+				self.room_group_name,
+				{
+					'type': 'chat_message',
+					'message': message,
+				}
+			)
+
+		def chat_message(self, event):
+			self.send(text_data=json.dumps(event))
+
+Здесь, мы создали `ChatConsumer`, который наследуется от **WebsocketConsumer**.
+`WebsocketConsumer` предоставляет три метода, `connect()`, `disconnect()`, and `receive()`:
+
+1. Внутри `connect()` we `called accept()` чтобы принять соединение. После этого, мы добавляем пользователя в группу channel layer.
+2. Внутри `disconnect()` мы удаляем пользователя из группы channel layer.
+3. Внутри `receive()` мы разбираем данные в формате JSON и извлекаем message. Затем мы пересылаем message используя group_send в chat_message.
+
+>При использовании `group_send` принадлежащий channel layer, ваш потребитель должен иметь метод для каждого типа `type` JSON сообщения который вы используете. В нашей ситуации, `type` равен `chat_message`. Таким образом мы добавили метод с названием `chat_message`.
+Если вы используете точки в ваших типах сообщений, Channels автоматически конвертирует их в подчеркивания при поиске метода -- например, `chat.message` станет `chat_message`.
+
+Поскольку `WebsocketConsumer` это асинхронный потребитель, нам пришлось вызвать `async_to_sync` кода работаем с слоем channel layer. Мы решили использовать sync consumer приложения чата поскольку оно тесно связанно с Django (которое есть sync по умолчанию. Другими словами, мы не получим прироста производительности при использовании async потребителя. 
+
+>Вам следует использовать sync consumers по умолчанию. Более того, используйте асинхронных потребителей в случаях, где вы абсолютно уверенны, что делаете что-то что принесет выигрыш от асинхронной обработки (например, длительные задачи, которые могли бы выполнится параллельно) и вы используете только async-native (асинхронные) библиотеки.
+
+### ДОБАВЛЕНИЕ МАРШРУТИЗАЦИИ КАНАЛОВ
+Каналы представляют различные классы маршрутизации **routing** которые позволяют объединять и складывать потребителей. Они похожи на Django's URLs.
+
+Добавьте файл *routing.py* в "chat":
+
+	:::python
+	# chat/routing.py
+
+	from django.urls import re_path
+
+	from . import consumers
+
+	websocket_urlpatterns = [
+		re_path(r'ws/chat/(?P<room_name>\w+)/$', consumers.ChatConsumer.as_asgi()),
+	]
+
+Зарегистрируйте файл *routing.py* в *core/asgi.py*:
+
+	:::python
+	# core/asgi.py
+
+	import os
+
+	from channels.routing import ProtocolTypeRouter, URLRouter
+	from django.core.asgi import get_asgi_application
+
+	import chat.routing
+
+	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+
+	application = ProtocolTypeRouter({
+	  'http': get_asgi_application(),
+	  'websocket': URLRouter(
+		  chat.routing.websocket_urlpatterns
+		),
+	})
+
+
+### WEBSOCKETS (FRONTEND)
+Чтобы общаться с Channels из frontend, мы будем использовать **WebSocket API**.
+
+WebSockets чрезвычайно легок для использования. Во первых, нам необходимо установить соединение указав `url` и затем вы можете прослушивать следующие события:
+
+1. `onopen` - вызывается, когда WebSocket соединение устанавливается.
+2. `onclose` - вызывается, когда WebSocket соединение разрывается.
+3. `onmessage` - вызывается, когда WebSocket получает сообщение.
+4. `onerror` - вызывается, когда WebSocket обнаруживает ошибку.
+
+Чтобы интегрировать WebSockets в наше приложение, добавьте следующее в конец *room.js*:
+
+	:::python
+	// chat/static/room.js
+
+	let chatSocket = null;
+
+	function connect() {
+		chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/");
+
+		chatSocket.onopen = function(e) {
+			console.log("Successfully connected to the WebSocket.");
+		}
+
+		chatSocket.onclose = function(e) {
+			console.log("WebSocket connection closed unexpectedly. Trying to reconnect in 2s...");
+			setTimeout(function() {
+				console.log("Reconnecting...");
+				connect();
+			}, 2000);
+		};
+
+		chatSocket.onmessage = function(e) {
+			const data = JSON.parse(e.data);
+			console.log(data);
+
+			switch (data.type) {
+				case "chat_message":
+					chatLog.value += data.message + "\n";
+					break;
+				default:
+					console.error("Unknown message type!");
+					break;
+			}
+
+			// scroll 'chatLog' to the bottom
+			chatLog.scrollTop = chatLog.scrollHeight;
+		};
+
+		chatSocket.onerror = function(err) {
+			console.log("WebSocket encountered an error: " + err.message);
+			console.log("Closing the socket.");
+			chatSocket.close();
+		}
+	}
+	connect();
+	
+После установления соединения WebSocket, в событии `onmessage`, мы определили тип сообщения на основе `data.type`. Обратите внимание ка мы обернули WebSocket внутри метода `connect()` чтобы иметь возможность восстановить соединение в случае разрыва. 
+
+Наконец, измените TODO внутри `chatMessageSend.onclickForm` на следующее:
+
+	:::python
+	// chat/static/room.js
+
+	chatSocket.send(JSON.stringify({
+		"message": chatMessageInput.value,
+	}));
+
+Полный обработчик теперь должен выглядеть так:
+
+	:::python
+	// chat/static/room.js
+
+	chatMessageSend.onclick = function() {
+		if (chatMessageInput.value.length === 0) return;
+		chatSocket.send(JSON.stringify({
+			"message": chatMessageInput.value,
+		}));
+		chatMessageInput.value = "";
+	};
+
+Первая версия чата выполнена.
+
+Чтобы протестировать, запустите сервер разработки. Затем, откройте два приватных/инкогнито окна браузера и в каждом, перейдите по ссылке http://localhost:8000/chat/default/.  Вы должны иметь возможность отправлять сообщения:
+
+![picture]({static}../images/django/channels/picture35.png)
+
+Это то все что касается базовой функциональности. Далее, мы рассмотрим аутентификацию.

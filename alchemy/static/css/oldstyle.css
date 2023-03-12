@@ -122,6 +122,6 @@ blockquote {
   background-color: #555;
 }
 
-@media (pointer: coarse) {
-  #myBtn:hover {background-color: #555;}
+@media (hover: none) and (pointer: coarse) {
+   #myBtn:hover {background-color: red;}
 }

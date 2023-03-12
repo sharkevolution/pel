@@ -105,7 +105,7 @@ blockquote {
 #myBtn {
   display: none;
   position: fixed;
-  bottom: 20px;
+  bottom: 75px;
   right: 30px;
   z-index: 99;
   font-size: 18px;
@@ -115,9 +115,10 @@ blockquote {
   color: white;
   cursor: pointer;
   padding: 15px;
-  border-radius: 4px;
+  border-radius: 40px;
 }
 
 #myBtn:hover {
   background-color: #555;
+  cursor: pointer;
 }

@@ -1,6 +1,6 @@
 AUTHOR = 'Sitala'
 SITENAME = 'The Precognition'
-SITESUBTITLE = 'A personal blog .'
+SITESUBTITLE = 'Личный блог Николая Ситала'
 
 PATH = 'content'
 

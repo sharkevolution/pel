@@ -120,5 +120,5 @@ blockquote {
 
 #myBtn:hover {
   background-color: #555;
-  cursor: pointer;
+  cursor: pointer !important;
 }

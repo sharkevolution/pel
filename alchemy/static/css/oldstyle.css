@@ -81,7 +81,7 @@ blockquote {
 }
 
 .toc ul li a {
-    color: #498afb;
+    /* color: #498afb; */
     font-weight: 500;
     transition: color .4s;
 }

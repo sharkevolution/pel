@@ -122,12 +122,6 @@ blockquote {
   background-color: #555;
 }
 
-
-@media (hover: none){
-  #myBtn:hover {background-color: #555;}
-}
-
-
-@media (hover: hover){
+@media (hover: hover) and (pointer: fine) {
   #myBtn:hover {background-color: #555;}
 }

@@ -5,6 +5,8 @@ Tags: Forth
 Cover: /images/forth1.png
 Summary:
 
+[TOC]
+
 ## Что такое Forth
 ***
 

@@ -720,3 +720,109 @@ WebSockets чрезвычайно легок для использования. 
 ![picture]({static}../images/django/channels/picture35.png)
 
 Это то все что касается базовой функциональности. Далее, мы рассмотрим аутентификацию.
+
+## АУТЕТНТИФИКАЦИЯ
+### БЭКЕНД
+
+Channels поставляются с встроенным классом для Django сессии и управления аутентификацией, которая называется `AuthMiddlewareStack`.
+Чтобы использовать его, единственное что необходимо сделать обернуть URLRouter внутри **core/asgi.py** следующим образом:
+
+	:::python
+	# core/asgi.py
+
+	import os
+
+	from channels.auth import AuthMiddlewareStack  # new import
+	from channels.routing import ProtocolTypeRouter, URLRouter
+	from django.core.asgi import get_asgi_application
+
+	import chat.routing
+
+	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+
+	application = ProtocolTypeRouter({
+	'http': get_asgi_application(),
+	'websocket': AuthMiddlewareStack(  # new
+			URLRouter(
+				chat.routing.websocket_urlpatterns
+			)
+		),  # new
+	})
+
+Теперь, когда бы ни присоединялся клиент, пользовательский объект будет добавлен в область. Доступ к нему можно получить:
+
+	:::python
+	user = self.scope['user']
+
+>Если вы хотите запускать каналы с одним из фреймворков JavaScript (такие как Angular, React, or Vue), вам придется использовать разные системы аутентификации (например, токен аутентификации). Если вы хотите изучить как использовать токен аутентификации с Channels, ознакомьтесь со следующими курсами:
+
+>1.	Developing a Real-Time Taxi App with Django Channels and Angular
+>2.	Developing a Real-Time Taxi App with Django Channels and React
+
+Давайте изменим `ChatConsumer` чтобы заблокировать не аутентифицированных пользователей от разговора и отобразим имена пользователей с сообщениями.
+ 
+Измените **chat/consumers.py** на следующее:
+
+	:::python
+	# chat/consumers.py
+
+	import json
+
+	from asgiref.sync import async_to_sync
+	from channels.generic.websocket import WebsocketConsumer
+
+	from .models import Room, Message  # new import
+
+
+	class ChatConsumer(WebsocketConsumer):
+
+		def __init__(self, *args, **kwargs):
+			super().__init__(args, kwargs)
+			self.room_name = None
+			self.room_group_name = None
+			self.room = None
+			self.user = None  # new
+
+		def connect(self):
+			self.room_name = self.scope['url_route']['kwargs']['room_name']
+			self.room_group_name = f'chat_{self.room_name}'
+			self.room = Room.objects.get(name=self.room_name)
+			self.user = self.scope['user']  # new
+
+			# connection has to be accepted
+			self.accept()
+
+			# join the room group
+			async_to_sync(self.channel_layer.group_add)(
+				self.room_group_name,
+				self.channel_name,
+			)
+
+		def disconnect(self, close_code):
+			async_to_sync(self.channel_layer.group_discard)(
+				self.room_group_name,
+				self.channel_name,
+			)
+
+		def receive(self, text_data=None, bytes_data=None):
+			text_data_json = json.loads(text_data)
+			message = text_data_json['message']
+
+			if not self.user.is_authenticated:  # new
+				return                          # new
+
+			# send chat message event to the room
+			async_to_sync(self.channel_layer.group_send)(
+				self.room_group_name,
+				{
+					'type': 'chat_message',
+					'user': self.user.username,  # new
+					'message': message,
+				}
+			)
+			Message.objects.create(user=self.user, room=self.room, content=message)  # new
+
+		def chat_message(self, event):
+			self.send(text_data=json.dumps(event))
+
+### FRONTEND

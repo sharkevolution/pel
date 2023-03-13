@@ -826,3 +826,338 @@ Channels поставляются с встроенным классом для 
 			self.send(text_data=json.dumps(event))
 
 ### FRONTEND
+Далее, давайте изменим **room.js** чтобы отображалось имя пользователя. Внутри `chatSocket.onMessage`, добавьте следующее:
+
+	:::python
+	// chat/static/room.js
+
+	chatSocket.onmessage = function(e) {
+		const data = JSON.parse(e.data);
+		console.log(data);
+
+		switch (data.type) {
+			case "chat_message":
+				chatLog.value += data.user + ": " + data.message + "\n";  // new
+				break;
+			default:
+				console.error("Unknown message type!");
+				break;
+		}
+
+		// scroll 'chatLog' to the bottom
+		chatLog.scrollTop = chatLog.scrollHeight;
+	};
+
+### ТЕСТИРОВАНИЕ
+Создайте суперпользователя, которого вы будете использовать для тестирования:
+
+	:::bash
+	(env)$ python manage.py createsuperuser
+
+Запустите сервер:
+
+	:::bash
+	(env)$ python manage.py runserver
+
+Откройте браузер и в войдите в систему используя админ логин Django по адресу http://localhost:8000/admin. 
+Затем перейдите http://localhost:8000/chat/default. Протестируйте это:
+
+![picture]({static}../images/django/channels/picture42.png)
+
+Выйдите из админ-панели Django. Перейдите к http://localhost:8000/chat/default. Что случается, когда вы пытаетесь отправить сообщение?
+
+## СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЕЙ
+
+Далее мы добавим следующие три типа сообщения:
+
+1. `user_list` – отправляется вновь присоединившемуся пользователю (data.users = список пользователей онлайн).
+2. `user_join` – отправляется, когда пользователь присоединяется к чату.
+3. `user_leave` – отправляется когда пользователь покидает чат.
+
+### БЭКЕНД
+В конце метода `connect` в `ChatConsumer` добавьте:
+
+	:::python
+	# chat/consumers.py
+
+	def connect(self):
+		# ...
+
+		# send the user list to the newly joined user
+		self.send(json.dumps({
+			'type': 'user_list',
+			'users': [user.username for user in self.room.online.all()],
+		}))
+
+		if self.user.is_authenticated:
+			# send the join event to the room
+			async_to_sync(self.channel_layer.group_send)(
+				self.room_group_name,
+				{
+					'type': 'user_join',
+					'user': self.user.username,
+				}
+			)
+			self.room.online.add(self.user)
+
+В конце метода `disconnect` в `ChatConsumer` добавьте:
+
+	:::python
+	# chat/consumers.py
+
+	def disconnect(self, close_code):
+		# ...
+
+		if self.user.is_authenticated:
+			# send the leave event to the room
+			async_to_sync(self.channel_layer.group_send)(
+				self.room_group_name,
+				{
+					'type': 'user_leave',
+					'user': self.user.username,
+				}
+			)
+			self.room.online.remove(self.user)
+
+Потому что мы добавили новые типы сообщений, нам также необходимо добавить методы для слоя channel_layer. В конце **chat/consumers.py** добавьте:
+
+	:::python
+	# chat/consumers.py
+
+	def user_join(self, event):
+		self.send(text_data=json.dumps(event))
+
+	def user_leave(self, event):
+		self.send(text_data=json.dumps(event))
+
+Ваш **consumers.py** после этого шага должен выглядеть так: consumers.py.
+
+### ФРОНТЕНД
+Для обработки сообщений из фронтенда добавьте следующие случаи в оператор switch в `chatSocket.onmessage` обработчик:
+
+	:::python
+	// chat/static/room.js
+
+	switch (data.type) {
+		// ...
+		case "user_list":
+			for (let i = 0; i < data.users.length; i++) {
+				onlineUsersSelectorAdd(data.users[i]);
+			}
+			break;
+		case "user_join":
+			chatLog.value += data.user + " joined the room.\n";
+			onlineUsersSelectorAdd(data.user);
+			break;
+		case "user_leave":
+			chatLog.value += data.user + " left the room.\n";
+			onlineUsersSelectorRemove(data.user);
+			break;
+		// ...
+
+### ТЕСТИРОВАНИЕ
+Запустите сервер снова, залогинтесь и посетите http://localhost:8000/chat/default.
+
+![picture]({static}../images/django/channels/picture47.png)
+
+Теперь вы должны видеть сообщения о присоединении и оставлении сообщений. Список пользователей также должен быть заполнен.
+
+## ЧАСТНЫЕ СООБЩЕНИЯ
+
+Пакет Channels не позволяет на прямую фильтровать, поэтому нет встроенного метода для отправки сообщений от одного клиента другому клиенту. С помощью каналов вы можете отправить сообщения:
+
+1. Клиентам потребителя (`self.send`)
+2. Группе channel layer (`self.channel_layer.group_send`)
+
+Таким образом, для того чтобы реализовать частные сообщения, мы:
+
+1. Создадим новую группу с названием `inbox_%USERNAME%` каждый раз как клиент присоединяется.
+2. Добавим клиента в свою группу входящих сообщений (`inbox_%USERNAME%`).
+3. Удалим клиента из группы входящих сообщений (`inbox_%USERNAME%`) когда они отключаются.
+
+После реализации, каждый клиент будет иметь свой ящик входящих сообщений. Затем другие клиенты могут отправлять частные сообщения в `inbox_%TARGET_USERNAME%`.
+
+### БЭКЕНД
+Измените **chat/consumers.py**.
+
+	:::python
+	# chat/consumers.py
+
+	class ChatConsumer(WebsocketConsumer):
+
+		def __init__(self, *args, **kwargs):
+			# ...
+			self.user_inbox = None  # new
+
+		def connect(self):
+			# ...
+			self.user_inbox = f'inbox_{self.user.username}'  # new
+
+			# accept the incoming connection
+			self.accept()
+
+			# ...
+
+			if self.user.is_authenticated:
+				# -------------------- new --------------------
+				# create a user inbox for private messages
+				async_to_sync(self.channel_layer.group_add)(
+					self.user_inbox,
+					self.channel_name,
+				)
+				# ---------------- end of new ----------------
+				# ...
+
+		def disconnect(self, close_code):
+			# ...
+
+			if self.user.is_authenticated:
+				# -------------------- new --------------------
+				# delete the user inbox for private messages
+				async_to_sync(self.channel_layer.group_discard)(
+					self.user_inbox,
+					self.channel_name,
+				)
+				# ---------------- end of new ----------------
+				# ...
+
+Итак, мы:
+
+1. Добавили `user_inbox` в `ChatConsumer` и инициализировали его на `connect()`.
+2. Добавили пользователя в группу `user_inbox` когда он подключается.
+3. Удалили пользователя из группы `user_inbox` когда он отключается.
+
+Далее, измените метод `receive()` для обработки частных сообщений:
+
+	:::python
+	# chat/consumers.py
+
+	def receive(self, text_data=None, bytes_data=None):
+		text_data_json = json.loads(text_data)
+		message = text_data_json['message']
+
+		if not self.user.is_authenticated:
+			return
+
+		# -------------------- new --------------------
+		if message.startswith('/pm '):
+			split = message.split(' ', 2)
+			target = split[1]
+			target_msg = split[2]
+
+			# send private message to the target
+			async_to_sync(self.channel_layer.group_send)(
+				f'inbox_{target}',
+				{
+					'type': 'private_message',
+					'user': self.user.username,
+					'message': target_msg,
+				}
+			)
+			# send private message delivered to the user
+			self.send(json.dumps({
+				'type': 'private_message_delivered',
+				'target': target,
+				'message': target_msg,
+			}))
+			return
+		# ---------------- end of new ----------------
+
+		# send chat message event to the room
+		async_to_sync(self.channel_layer.group_send)(
+			self.room_group_name,
+			{
+				'type': 'chat_message',
+				'user': self.user.username,
+				'message': message,
+			}
+		)
+		Message.objects.create(user=self.user, room=self.room, content=message)
+
+Добавьте следующие методы в конец файла **chat/consumers.py**:
+
+	:::python
+	# chat/consumers.py
+
+	def private_message(self, event):
+		self.send(text_data=json.dumps(event))
+
+	def private_message_delivered(self, event):
+		self.send(text_data=json.dumps(event))
+
+Ваш окончательный файл **chat/consumers.py** должен быть равен этому файлу: consumers.py
+
+### ФРОНТЕНД
+Для обработки частных сообщений в фронтенде, добавьте `private_message` и `private_message_delivered` случаи внутри оператора `switch(data.type)`:
+
+	:::python
+	// chat/static/room.js
+
+	switch (data.type) {
+		// ...
+		case "private_message":
+			chatLog.value += "PM from " + data.user + ": " + data.message + "\n";
+			break;
+		case "private_message_delivered":
+			chatLog.value += "PM to " + data.target + ": " + data.message + "\n";
+			break;
+		// ...
+	}
+
+Чтобы сделать чат немного удобнее, мы можем изменить ввод сообщения в 
+pm `%USERNAME%` когда пользователь нажимает на одного из онлайн пользователей в `onlineUsersSelector`. Добавьте следующий обработчик внизу:
+
+	:::python
+	// chat/static/room.js
+
+	onlineUsersSelector.onchange = function() {
+		chatMessageInput.value = "/pm " + onlineUsersSelector.value + " ";
+		onlineUsersSelector.value = null;
+		chatMessageInput.focus();
+	};
+
+### ТЕСТИРОВАНИЕ
+Вот и все! Приложение чат теперь завершено. Давайте протестируем это в последний раз.
+
+Создайте суперпользователя для тестирования, и затем запустите сервер.
+
+Откройте два разных частных/incognito браузера, вход в оба по адресу http://localhost:8000/admin.
+
+Затем перейдите http://localhost:8000/chat/default в обоих браузерах. Нажмите на одного из подключенных пользователей чтобы отправить ему частное сообщение:
+
+![picture]({static}../images/django/channels/picture53.png)
+
+## ЗАКЛЮЧЕНИЕ
+
+В этом учебном пособии, мы посмотрели, как использовать Channels с Django. Вы узнали о разнице между выполнением синхронного и асинхронного кода вместе со следующими понятиями Channels.
+
+1. Потребители
+2. Слои Channel layers
+3. Маршрутизация
+
+Наконец, мы связали все вместе с WebSockets и создали приложение чат.
+Наш чат далек от совершенства. Если вы хотите практиковать то, чему научились, вы можете улучшить это следующим образом:
+
+1. Добавление чатов только для администраторов.
+2. Отправка последних десяти сообщений пользователю, когда он присоединился в чат комнату.
+3. Позволить пользователям редактировать и удалять сообщения
+4. Добавить функциональность «пользователь печатает»
+5. Добавить реакции на сообщения.
+
+> Идеи ранжируются от самых легких до самых сложных для реализации.
+
+Вы можете взять код из репозитория django-channels-example на GitHub.
+
+https://github.com/testdrivenio/django-channels-example
+
+https://testdriven.io/authors/tomazic/
+
+https://coderbooks.ru/books/python/
+
+![picture]({static}../images/django/channels/tomazic.png)
+
+
+
+
+
+

@@ -116,13 +116,13 @@ blockquote {
 }
 
 #myBtn:hover {
-  color: black;
+  color: #333;
   background-color:rgba(54, 25, 25, 0);
 }
 
 @media(any-pointer: coarse) {
    #myBtn:hover {
-    color: black;
+    color: #333;
     background-color:rgba(54, 25, 25, 0);
   }
    
@@ -135,7 +135,7 @@ blockquote {
 	  font-size: 18px;
 	  border: none;
 	  outline: none;
-    color: black;
+    color: #333;
     background-color:rgba(54, 25, 25, 0);
 	  cursor: pointer;
 	}

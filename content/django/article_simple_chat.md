@@ -9,7 +9,7 @@ Summary:
 
 # Django Simple Chat Application
 
-Проект доступен для скачивания на *[GitHub][4]*
+#### Проект доступен для скачивания на *[GitHub][4]*
 
 [4]:https://github.com/sharkevolution/debug
 

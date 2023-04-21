@@ -137,8 +137,8 @@ Authorization: Bearer <token> simple JWT в заголовке
 
 # Postman клиент для тестирования API
 
-В проекте для возможности тестирования добавлен файл импорта *[Postman][3]*, Collection v2.1 
+В проекте для возможности тестирования добавлен файл для импорта в *[Postman][3]*, версия Collection v2.1 
 
-Файл `Simple_Chat_Django.postman_collection.json`
+Файл для импорта в корне проекта `Simple_Chat_Django.postman_collection.json`
 	
 [3]:https://www.postman.com/

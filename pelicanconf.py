@@ -27,7 +27,7 @@ THEME_CSS_OVERRIDES = ['theme/css/oldstyle.css']
 # https://sharkevolution.github.io/mylab/
 
 ICONS = (
-    ('fa-jupyter', 'https://mybinder.org/v2/git/https%3A%2F%2Fsharkevolution%40bitbucket.org%2Fsharkevolution%2Frequirements.git/HEAD'),
+    ('fa-jupyter', 'https://mybinder.org/v2/git/https%3A%2F%2Fbitbucket.org%2Fsharkevolution%2Frequirements%2Fsrc%2Fmaster/HEAD'),
     ('fa-python', 'https://sharkevolution.github.io/mylab/'),
 
 )

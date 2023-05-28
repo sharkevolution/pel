@@ -10,7 +10,7 @@ Summary:
 [1]:https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/?utm_source=pocket_saves
 [2]:https://www.joelonsoftware.com/about-me/
 
-# Things You Should Never Do, Part I (April 6, 2000)
+# Вещи которые вам никогда не следует делать, Часть 1 (April 6, 2000)
 
 Netscape 6.0 наконец входит в свою публичную бета-версию. Никогда небыло версии 5.0. Последний оcновной релиз, версия 4.0, был выпущен практически через 3 года спустя. Три года, - это ***ужасно*** долгое время для интернет-мира. Втечение этого времени, Netscape сидела и беспомощно наблюдала, как резко упала их доля.
 

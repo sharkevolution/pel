@@ -1,11 +1,11 @@
-Title: Вещи которые никогда не следует делать 
+Title: Things You Should Never Do, Part I
 Date: 2023-05-27 00:01
 Author: Joel Spolsky
 Tags: spolsky, programming, 
 Cover: /images/joel.png
 Summary:
 
-#### Это перевод оригинальной статьи [Things You Should Never Do, Part I][1] Автор [Joel Spolsky][2]: 
+##### Это перевод оригинальной статьи [Things You Should Never Do, Part I][1] Автор [Joel Spolsky][2]: 
 
 [1]:https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/?utm_source=pocket_saves
 [2]:https://www.joelonsoftware.com/about-me/

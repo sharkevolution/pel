@@ -1,3 +1,4 @@
+urllib3==2.0.4
 pelican[Markdown]
 disqus-python
 beautifulsoup4

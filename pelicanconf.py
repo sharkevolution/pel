@@ -55,7 +55,6 @@ THEME_JS_OVERRIDES = ['theme/js/bootstrap.min.js',]
 BOOTSTRAP_CSS = 'theme/css/bootstrap.min.css'
 FONTAWESOME_CSS = 'theme/css/fork-awesome.css'
 
-
 PLUGINS = ['plugins.bootstrap', 'plugins.render_math', 'plugins.tipue_search', "sitemap"]
 
 BOOTSTRAPIFY = {
@@ -92,4 +91,10 @@ MARKDOWN = {
         "markdown.extensions.toc": {"title": "Оглавление"},
     },
     "output_format": "html5",
+}
+
+MARKDOWN = MARKDOWN | {
+    'extensions': [
+        'customblocks',
+    ],
 }

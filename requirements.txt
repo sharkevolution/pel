@@ -5,4 +5,3 @@ pelican-render-math
 Markdown
 pelican-sitemap
 markdown-customblocks
-pelican-youtube

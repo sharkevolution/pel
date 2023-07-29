@@ -1,7 +1,8 @@
-urllib3==2.0.4
+pelican==4.8.0
 pelican[Markdown]
 disqus-python
 beautifulsoup4
 pelican-render-math
 Markdown
 pelican-sitemap
+markdown-customblocks==1.2.0

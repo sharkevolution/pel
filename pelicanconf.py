@@ -91,10 +91,7 @@ MARKDOWN = {
         "markdown.extensions.toc": {"title": "Оглавление"},
     },
     "output_format": "html5",
+    'extensions': ['customblocks',],
 }
 
-MARKDOWN = MARKDOWN | {
-    'extensions': [
-        'customblocks',
-    ],
-}
+# MARKDOWN.update = ({'extensions': ['customblocks',],})

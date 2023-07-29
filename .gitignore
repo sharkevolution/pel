@@ -2,5 +2,5 @@
 /.idea/*
 /venv/*
 /output/*
-.bat
-.cmd
+/*.bat
+/*.cmd

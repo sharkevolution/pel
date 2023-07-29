@@ -1,1 +1,0 @@
-cmd /k %cd%\venv\Scripts\activate

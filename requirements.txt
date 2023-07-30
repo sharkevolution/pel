@@ -6,3 +6,4 @@ pelican-render-math
 Markdown
 pelican-sitemap
 markdown-customblocks==1.2.0
+pelican-graphviz

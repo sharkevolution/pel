@@ -93,5 +93,3 @@ MARKDOWN = {
     "output_format": "html5",
     'extensions': ['customblocks',],
 }
-
-# MARKDOWN.update = ({'extensions': ['customblocks',],})
